@@ -8,8 +8,8 @@ C_DEFINES := -DTEST=0 -DN_THREADS=$(THREADS) -DMEMORY=$(MEMORY)
 
 .PHONY : clean
 
-$(TARGET) : main.c
-	$(CC) $(C_FLAGS) $(C_DEFINES) $(LD_FLAGS) -o $(TARGET) main.c
+$(TARGET) : t-test1.c
+	$(CC) $(C_FLAGS) $(C_DEFINES) $(LD_FLAGS) -o $(TARGET) t-test1.c
 
 clean :
 	@rm -rf $(TARGET) $(TARGET)_*

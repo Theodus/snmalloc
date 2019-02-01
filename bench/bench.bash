@@ -4,8 +4,8 @@ set -u
 
 max_thread_pow=${1:-4}
 
-min_mem_pow=5
-max_mem_pow=30
+min_mem_pow=6
+max_mem_pow=29
 
 for p in `seq 0 $max_thread_pow`; do
   for i in `seq $min_mem_pow $max_mem_pow`; do
