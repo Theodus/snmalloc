@@ -2,26 +2,28 @@
 
 set -u
 
-max_threads=${1:-4}
+max_thread_pow=${1:-3}
 
-for i in `seq 1 $max_threads`; do
-  make THREADS="$i" TARGET="bench_$i" > /dev/null
+for p in `seq 0 $max_thread_pow`; do
+  for i in `seq 6 20`; do
+    t="$((2 ** $p))"
+    m="$((1 << $i))"
+    make THREADS="$t" MEMORY="$m" TARGET="bench_$t\_$m" > /dev/null
+  done
 done
 
-echo -e "# threads\t glibc\t snmalloc" | tee data.txt
-for i in `seq 1 $max_threads`; do
-  row="\t$i"
-  row+="\t $((time -p ./bench_$i) |& grep real | awk '{ print $2 }')"
-  row+="\t $((LD_PRELOAD=../build/libsnmallocshim.so time -p ./bench_$i) |& grep real | awk '{ print $2 }')"
-  echo -e $row | tee -a data.txt
+fmt="%-8s\t%-10s\t%-5s\t%-5s\n"
+
+printf "$fmt" "# threads" "alloc size" "glibc" "snmalloc" | tee data.txt
+for p in `seq 0 $max_thread_pow`; do
+  for i in `seq 6 20`; do
+    t="$((2 ** $p))"
+    m="$((1 << $i))"
+    real1="$((time -p ./bench_$t\_$m) |& grep real | awk '{ print $2 }')"
+    real2="$((LD_PRELOAD=../build/libsnmallocshim.so time -p ./bench_$t\_$m) |& grep real | awk '{ print $2 }')"
+    printf "$fmt" "$t" "$m" "$real1" "$real2" | tee -a data.txt
+  done
 done
 
-gnuplot -e "\
-  set terminal svg;\
-  set output 'plot.svg';\
-  set xlabel 'threads';\
-  set ylabel 'seconds';\
-  plot 'data.txt' using 1:2 title 'glibc' w linespoints, \
-    'data.txt' using 1:3 title 'snmalloc' w linespoints"
-
-display plot.svg
+gnuplot -e "max_thread_pow=$max_thread_pow" plot.plt \
+  && display plot.svg

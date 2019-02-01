@@ -1,13 +1,15 @@
 CC ?= clang
-CFLAGS := -O3 -g -Wall -Wextra -Wpedantic
-LDFLAGS := -lpthread
+C_FLAGS := -O3 -g -Wall -Wextra -Wpedantic
+LD_FLAGS := -lpthread
 TARGET := bench
 THREADS ?= 8
+MEMORY ?= $(shell echo "$$((1 << 26))")
+C_DEFINES := -DTEST=0 -DN_THREADS=$(THREADS) -DMEMORY=$(MEMORY)
 
-.PHONY : clean bench_glibc bench_snmalloc
+.PHONY : clean
 
 $(TARGET) : main.c
-	$(CC) $(CFLAGS) -DN_THREADS=$(THREADS) -DTEST=0 $(LDFLAGS) -o $(TARGET) main.c
+	$(CC) $(C_FLAGS) $(C_DEFINES) $(LD_FLAGS) -o $(TARGET) main.c
 
 clean :
 	@rm -rf $(TARGET) $(TARGET)_*
