@@ -1,10 +1,12 @@
 CC ?= clang
-C_FLAGS := -O3 -g -Wall -Wextra -Wpedantic
+C_FLAGS := -O3 -g -Wall -Wextra -Wpedantic -fno-omit-frame-pointer
 LD_FLAGS := -lpthread
 TARGET := bench
 THREADS ?= 8
 MEMORY ?= $(shell echo "$$((1 << 26))")
-C_DEFINES := -DTEST=0 -DN_THREADS=$(THREADS) -DMEMORY=$(MEMORY)
+N_TOTAL ?= 1000
+C_DEFINES := -DTEST=0 -DN_THREADS=$(THREADS) -DMEMORY=$(MEMORY) -DN_TOTAL=$(N_TOTAL)
+
 
 .PHONY : clean
 

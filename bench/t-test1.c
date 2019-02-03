@@ -18,7 +18,9 @@
 #  define TEST 0
 #endif
 
-#define N_TOTAL 1000
+#ifndef N_TOTAL
+#  define N_TOTAL 1000
+#endif
 #ifndef N_THREADS
 #  define N_THREADS 2
 #endif
