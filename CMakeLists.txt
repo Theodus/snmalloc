@@ -37,7 +37,10 @@ if(MSVC)
   set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /DEBUG")
 else()
   find_package(Threads REQUIRED)
-  add_compile_options(-mcx16 -march=native -Wall -Wextra -Werror -Wsign-conversion -g -fno-exceptions -fno-rtti)
+  add_compile_options(
+    -g -fno-omit-frame-pointer
+    -fno-exceptions -fno-rtti
+    -mcx16 -march=native -Wall -Wextra -Werror -Wsign-conversion)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
